@@ -4,27 +4,20 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Scanner;
 
-public class Ejercicio3_8 {
+public class Ejercicio5_8 {
     private static final Scanner sc = new Scanner(System.in);
-
     public static void main(String[] args) {
-        //URL de conexión
-        String url = "jdbc:mysql://localhost:3309/classicmodels?serverTimezone=UTC&useSSL=true&characterEncoding=UTF-8";
-        //Usuario
+        String url = "jdbc:mysql://localhost:3306/classicmodels?serverTimezone=UTC&useSSL=true&characterEncoding=UTF-8";
         String usuario = "root";
-        //Contraseña
         String password = "admin.123";
-        //Conexión a la base de datos en un try-with-resources para que se cierre automáticamente.
-        try (Connection conexion = DriverManager.getConnection(url, usuario, password)) {
-            //Pedimos los datos al usuario
-            System.out.println("Introduce la cantidad menor que el precio de los productos que quieres ver: ");
-            int cantidad = sc.nextInt();
-            System.out.println("Introduce la primera letra del nombre de los productos que quieres ver: ");
-            String letra = sc.next();
+
+        try (Connection conexion = DriverManager.getConnection(url, usuario, password)){
+            System.out.println("Introduce el nombre del producto: ");
+            String nombre = sc.nextLine();
             //Creamos el Statement para poder hacer las consultas y ejecutarlas.
             Statement sentencia = conexion.createStatement();
             //Creamos la consulta
-            String sql = "SELECT * FROM products WHERE buyPrice < " + cantidad + " AND productName LIKE '" + letra + "%'";
+            String sql = "SELECT productVendor FROM products WHERE productName = '" + nombre + "'";
             //Ejecutamos la consulta
             sentencia.executeQuery(sql);
             //Comprobamos si se ha ejecutado la consulta
@@ -34,14 +27,14 @@ public class Ejercicio3_8 {
                 System.err.println("No se ha ejecutado la consulta");
             }
             //Mostramos los resultados
-            System.out.println("Los productos con un precio menor que " + cantidad + " y que empiezan por " + letra + " son: ");
+            System.out.println("El proveedor del producto " + nombre + " es: ");
             //Recorremos los resultados mientras haya y los mostramos.
             while (sentencia.getResultSet().next()) {
-                System.out.println(sentencia.getResultSet().getString("productName"));
+                System.out.println(sentencia.getResultSet().getString("productVendor"));
             }
+
         } catch (SQLException e) {
             System.err.println("Error al realizar la conexión con la base de datos " + e.getMessage());
         }
-
     }
 }

@@ -1,15 +1,10 @@
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.Scanner;
-
-public class Ejercicio3_8 {
+public class Ejercicio4_8 {
     private static final Scanner sc = new Scanner(System.in);
-
     public static void main(String[] args) {
         //URL de conexión
-        String url = "jdbc:mysql://localhost:3309/classicmodels?serverTimezone=UTC&useSSL=true&characterEncoding=UTF-8";
+        String url = "jdbc:mysql://localhost:3306/classicmodels?serverTimezone=UTC&useSSL=true&characterEncoding=UTF-8";
         //Usuario
         String usuario = "root";
         //Contraseña
@@ -23,25 +18,29 @@ public class Ejercicio3_8 {
             String letra = sc.next();
             //Creamos el Statement para poder hacer las consultas y ejecutarlas.
             Statement sentencia = conexion.createStatement();
-            //Creamos la consulta
-            String sql = "SELECT * FROM products WHERE buyPrice < " + cantidad + " AND productName LIKE '" + letra + "%'";
+            //Creamos el update para cambiar los nombres de los productos a mayúsculas.
+            String sql = "UPDATE products SET productName = UPPER(productName) WHERE buyPrice < " + cantidad + " AND productName LIKE '" + letra + "%'";
+            //Creamos una consulta para mostrar los productos que cumplan la condición.
+            String sql2 = "SELECT * FROM products WHERE buyPrice < " + cantidad + " AND productName LIKE '" + letra + "%'";
             //Ejecutamos la consulta
-            sentencia.executeQuery(sql);
-            //Comprobamos si se ha ejecutado la consulta
-            if (sentencia.execute(sql)) {
-                System.out.println("Se ha ejecutado la consulta");
-            }else {
-                System.err.println("No se ha ejecutado la consulta");
-            }
+            sentencia.executeUpdate(sql);
+            ResultSet resultados = sentencia.executeQuery(sql2);
+
             //Mostramos los resultados
             System.out.println("Los productos con un precio menor que " + cantidad + " y que empiezan por " + letra + " son: ");
             //Recorremos los resultados mientras haya y los mostramos.
-            while (sentencia.getResultSet().next()) {
-                System.out.println(sentencia.getResultSet().getString("productName"));
+            while (resultados.next()) {
+                String codigo = resultados.getString("productCode");
+                String nombre = resultados.getString("productName");
+                double precio = resultados.getDouble("buyPrice");
+                System.out.println(codigo + " - " + nombre + " - " + precio);
             }
+
+            resultados.close();
+            sentencia.close();
+
         } catch (SQLException e) {
             System.err.println("Error al realizar la conexión con la base de datos " + e.getMessage());
         }
-
     }
 }
