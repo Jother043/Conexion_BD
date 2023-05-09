@@ -1,15 +1,14 @@
+import Conn.DataBaseConnection;
+
 import java.sql.*;
 
-public class Ejercicio2_8 {
+public class Ejercicio2_8_2 {
     //Creamos la consulta como constante.
     private static final String SQL = "SELECT productName, MSRP FROM products where MSRP < 400";
 public static void main(String[] args) {
-        //Conexión con la base de datos.
-        String url = "jdbc:mysql://localhost:3306/classicmodels?serverTimezone=UTC&useSSL=true&characterEncoding=UTF-8";
-        String usuario = "root";
-        String password = "admin.123";
+
         //Conexión a la base de datos en un try-with-resources para que se cierre automáticamente.
-        try (Connection conexion = DriverManager.getConnection(url, usuario, password)) {
+        try (Connection conexion = DataBaseConnection.getInstance().getConexion()) {
             //Creamos el Statement para poder hacer las consultas y ejecutarlas.
             Statement sentencia = conexion.createStatement();
             //Creamos la consulta

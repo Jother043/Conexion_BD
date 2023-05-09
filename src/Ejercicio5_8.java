@@ -1,7 +1,4 @@
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.Scanner;
 
 public class Ejercicio5_8 {
@@ -15,13 +12,12 @@ public class Ejercicio5_8 {
             System.out.println("Introduce el nombre del producto: ");
             String nombre = sc.nextLine();
             //Creamos el Statement para poder hacer las consultas y ejecutarlas.
-            Statement sentencia = conexion.createStatement();
-            //Creamos la consulta
-            String sql = "SELECT productVendor FROM products WHERE productName = '" + nombre + "'";
+            PreparedStatement sentencia = conexion.prepareStatement("SELECT productVendor FROM products WHERE productName = ?");
             //Ejecutamos la consulta
-            sentencia.executeQuery(sql);
+            sentencia.setString(1, nombre);
+            sentencia.executeQuery();
             //Comprobamos si se ha ejecutado la consulta
-            if (sentencia.execute(sql)) {
+            if (sentencia.execute()) {
                 System.out.println("Se ha ejecutado la consulta");
             }else {
                 System.err.println("No se ha ejecutado la consulta");

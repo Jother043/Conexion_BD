@@ -39,8 +39,13 @@ public class Ejercicio3_8 {
             while (sentencia.getResultSet().next()) {
                 System.out.println(sentencia.getResultSet().getString("productName"));
             }
+            //Cerramos la sentencia
+            sentencia.close();
+
         } catch (SQLException e) {
             System.err.println("Error al realizar la conexión con la base de datos " + e.getMessage());
+        }finally {
+            sc.close();
         }
 
     }
